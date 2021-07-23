@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public class UserDAO {
     public static void printData(Connection conn, String query, String... columnNames) throws SQLException {
@@ -13,7 +14,7 @@ public class UserDAO {
                 int j = 0;
                 int i = 0;
                 User user = new User();
-                User[] tabUser;
+                User[] tabUser = new User[0];
                 for (String columnName : columnNames) {
                     // System.out.println(resultSet.getString(columnName));
                     switch (i) {
@@ -28,13 +29,16 @@ public class UserDAO {
                     }
                     i++;
                 }
-                System.out.println(user.getID() + ", " + user.getEmail() + ", " + user.getUsername() + ", "
-                        + user.getPassword());
+                // System.out.println(user.getID() + ", " + user.getEmail() + ", " + user.getUsername() + ", "
+                //       + user.getPassword());
+                User[] newtabUser = Arrays.copyOf(tabUser, tabUser.length + 1);
+                tabUser = newtabUser;
                 tabUser[j] = user;
                 j++;
                 for (int k = 0; k < tabUser.length; k++) {
                     System.out.println(user.getID() + ", " + user.getEmail() + ", " + user.getUsername() + ", "
                             + user.getPassword());
+                    System.out.println(Arrays.toString(tabUser));
                 }
             }
         } catch (
