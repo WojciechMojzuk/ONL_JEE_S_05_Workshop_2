@@ -2,18 +2,51 @@ package Workshop2;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class Main {
-
-    private final static String GET_MOVIES = "select * from movies where rating > (select avg(rating) from movies)";
+    private final static String DB_NAME = "Workshop2";
+    private final static String FIND_ALL = "select * from users";
 
     public static void main(String[] args) {
+        listOptions();
+        SelectOption();
 
-        try (Connection conn = DBUtil.connect("cinemas")) {
-            DBUtil.printData(conn, GET_MOVIES, "id", "title", "description", "rating");
+
+    }
+
+    public static void listOptions() {
+        System.out.println("Available options:");
+        System.out.println("1. findAll,");
+        System.out.println("2. deleteAll,");
+        System.out.println("3. add one record,");
+        System.out.println("4. update one record,");
+        System.out.println("5. delete one record.");
+        System.out.println("Please select an option: 1, 2, 3, 4, 5.");
+    }
+
+    public static void SelectOption() {
+        Scanner scan = new Scanner(System.in);
+        String selectedOpt = scan.nextLine();
+        //System.out.println(selectedOpt);
+        int selOpt = Integer.parseInt(selectedOpt);
+
+        switch (selOpt){
+            case 1:
+                findAll();
+                break;
+
+            default:
+                System.out.println("No available option selected");
+        }
+    }
+
+    public static void findAll() {
+
+        try (Connection conn = DBUtil.connect(DB_NAME)) {
+            UserDAO.printData(conn, FIND_ALL, "id", "email", "username", "password");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }
