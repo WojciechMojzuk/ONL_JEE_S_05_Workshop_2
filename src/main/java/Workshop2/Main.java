@@ -7,12 +7,11 @@ import java.util.Scanner;
 public class Main {
     private final static String DB_NAME = "Workshop2";
     private final static String FIND_ALL = "select * from users";
+    private final static String ADD_ONE = "insert into users(email, username, password) values (?, ?, ?)";
 
     public static void main(String[] args) {
         listOptions();
         SelectOption();
-
-
     }
 
     public static void listOptions() {
@@ -28,12 +27,14 @@ public class Main {
     public static void SelectOption() {
         Scanner scan = new Scanner(System.in);
         String selectedOpt = scan.nextLine();
-        //System.out.println(selectedOpt);
         int selOpt = Integer.parseInt(selectedOpt);
 
-        switch (selOpt){
+        switch (selOpt) {
             case 1:
                 findAll();
+                break;
+            case 3:
+                insertOne();
                 break;
 
             default:
@@ -48,5 +49,14 @@ public class Main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public static void insertOne (){
+        
+        try (Connection conn = DBUtil.connect(DB_NAME)) {
+            UserDAO.insertData(conn, ADD_ONE, UserDAO.askParam());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }
