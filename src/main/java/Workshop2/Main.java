@@ -1,8 +1,12 @@
 package Workshop2;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
+
+import static Workshop2.UserDAO.getData;
 
 public class Main {
     private final static String DB_NAME = "Workshop2";
@@ -25,9 +29,7 @@ public class Main {
     }
 
     public static void SelectOption() {
-        Scanner scan = new Scanner(System.in);
-        String selectedOpt = scan.nextLine();
-        int selOpt = Integer.parseInt(selectedOpt);
+        int selOpt = getInt();
 
         switch (selOpt) {
             case 1:
@@ -45,13 +47,16 @@ public class Main {
     public static void findAll() {
 
         try (Connection conn = DBUtil.connect(DB_NAME)) {
-            UserDAO.printData(conn, FIND_ALL, "id", "email", "username", "password");
+           // getData(conn, FIND_ALL, "id", "email", "username", "password");
+            User[] allUsers = getData(conn, FIND_ALL, "id", "email", "username", "password");
+            printData(allUsers);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public static void insertOne (){
-        
+
+    public static void insertOne() {
+
         try (Connection conn = DBUtil.connect(DB_NAME)) {
             UserDAO.insertData(conn, ADD_ONE, UserDAO.askParam());
         } catch (SQLException e) {
@@ -59,4 +64,45 @@ public class Main {
         }
 
     }
+
+    public static int getInt() {
+        Scanner scan = new Scanner(System.in);
+        int param;
+        while (!scan.hasNextInt()) {
+            System.out.println("Waiting for a number.");
+            scan.next();
+        }
+        param = scan.nextInt();
+        return param;
+    }
+
+    public static void printData(User[] tab) {
+        System.out.println("Data:");
+        for (int k = 0; k < tab.length; k++) {
+            User user = tab[k];
+            System.out.println(user.getID() + ", " + user.getEmail() + ", " + user.getUsername() + ", "
+                    + user.getPassword());
+        }
+    }
+
+    public static String[] askParam() {
+        User user = new User();
+        Scanner scan = new Scanner(System.in);
+        int i = 1;
+        user.setId(i);
+        System.out.println("Email?");
+        user.setEmail(scan.nextLine());
+        System.out.println("Username?");
+        user.setUsername(scan.nextLine());
+        System.out.println("Password?");
+        String hashed = hashPassword(scan.nextLine());
+        user.setPassword(hashed);
+        String[] param = new String[]{user.getEmail(), user.getUsername(), user.getPassword()};
+        return param;
+    }
+
+    public static String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
 }
