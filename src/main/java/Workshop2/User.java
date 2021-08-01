@@ -2,12 +2,14 @@ package Workshop2;
 
 public class User {
 
-    private static int id;
-    private static String email;
-    private static String username;
-    private static String password;
+    private  int id;
+    private String email;
+    private String username;
+    private String password;
 
-    public void user(int id, String email, String username, String password) {
+    public User() {}
+
+    public User(int id, String email, String username, String password) {
         this.id = id;
         this.email= email;
         this.username = username;

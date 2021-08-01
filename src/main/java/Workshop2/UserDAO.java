@@ -19,7 +19,9 @@ public class UserDAO {
             while (resultSet.next()) {
                 int i = 0;
                 User user = new User();
+
                 for (String columnName : columnNames) {
+
                     switch (i) {
                         case 0:
                             user.setId(resultSet.getInt(columnName));
@@ -32,7 +34,9 @@ public class UserDAO {
                     }
                     i++;
                 }
+
                 User[] newtabUser = Arrays.copyOf(tabUser, tabUser.length + 1);
+
                 tabUser = newtabUser;
                 tabUser[tabUser.length - 1] = user;
             }
@@ -54,26 +58,37 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    public static String[] askParam() {
-        User user = new User();
-        Scanner scan = new Scanner(System.in);
-        int i = 1;
-        user.setId(i);
-        System.out.println("Email?");
-        user.setEmail(scan.nextLine());
-        System.out.println("Username?");
-        user.setUsername(scan.nextLine());
-        System.out.println("Password?");
-        String hashed = hashPassword(scan.nextLine());
-        user.setPassword(hashed);
-        String[] param = new String[]{user.getEmail(), user.getUsername(), user.getPassword()};
-        return param;
+    public static void removeRecord(Connection conn, String query, int id) {
+        try (PreparedStatement statement =
+                     conn.prepareStatement(query);) {
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static String hashPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
+    public static void removeAll(Connection conn, String query) {
+        try (PreparedStatement statement =
+                     conn.prepareStatement(query);) {
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateData(Connection conn, String query, String... params) {
+
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            for (int i = 0; i < params.length; i++) {
+                statement.setString(i + 1, params[i]);
+            }
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
