@@ -42,30 +42,35 @@ public class Main {
                 findAll();
                 listOptions();
                 SelectOption();
+                break;
             case 2:
                 findAll();
                 deleteAll();
                 findAll();
                 listOptions();
                 SelectOption();
+                break;
             case 3:
                 findAll();
                 insertOne();
                 findAll();
                 listOptions();
                 SelectOption();
+                break;
             case 4:
                 findAll();
                 updateOne();
                 findAll();
                 listOptions();
                 SelectOption();
+                break;
             case 5:
                 findAll();
                 deleteOne();
                 findAll();
                 listOptions();
                 SelectOption();
+                break;
             case 6:
                 System.out.println("Break.");
                 break;
